@@ -21,3 +21,6 @@ int main(void)
     }
 }
 
+/*
+Sanna som tester å pushe igjen, og igjeeeeeen
+*/
