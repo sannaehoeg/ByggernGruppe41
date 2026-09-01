@@ -15,7 +15,7 @@
 #include <util/delay.h>
 #include "USART.h"
 #include <stdio.h>
-//Henrik var her
+//Henrik var her, igjen
 int main(void)
 {
     /* Replace with your application code */
