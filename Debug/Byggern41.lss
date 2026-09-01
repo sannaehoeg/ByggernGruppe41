@@ -3,27 +3,29 @@ Byggern41.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000102  2**0
+  0 .data         00000000  00800100  00800100  0000011c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000ae  00000000  00000000  00000054  2**1
+  1 .text         000000c8  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000102  2**0
+  2 .comment      00000030  00000000  00000000  0000011c  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000134  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000014c  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  00000170  2**0
+  4 .debug_aranges 00000050  00000000  00000000  00000188  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000006db  00000000  00000000  00000190  2**0
+  5 .debug_info   000007a1  00000000  00000000  000001d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000645  00000000  00000000  0000086b  2**0
+  6 .debug_abbrev 000006b1  00000000  00000000  00000979  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000025e  00000000  00000000  00000eb0  2**0
+  7 .debug_line   00000306  00000000  00000000  0000102a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00001110  2**2
+  8 .debug_frame  00000068  00000000  00000000  00001330  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000379  00000000  00000000  00001134  2**0
+  9 .debug_str    0000036d  00000000  00000000  00001398  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000010  00000000  00000000  000014ad  2**0
+ 10 .debug_loc    00000039  00000000  00000000  00001705  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000030  00000000  00000000  0000173e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -65,49 +67,85 @@ Disassembly of section .text:
   76:	d4 e0       	ldi	r29, 0x04	; 4
   78:	de bf       	out	0x3e, r29	; 62
   7a:	cd bf       	out	0x3d, r28	; 61
-  7c:	0e 94 44 00 	call	0x88	; 0x88 <main>
-  80:	0c 94 55 00 	jmp	0xaa	; 0xaa <_exit>
+  7c:	0e 94 53 00 	call	0xa6	; 0xa6 <main>
+  80:	0c 94 62 00 	jmp	0xc4	; 0xc4 <_exit>
 
 00000084 <__bad_interrupt>:
   84:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000088 <main>:
-#include <util/delay.h>
+00000088 <USART_init>:
 
+#include <avr/io.h>
+#include "USART.h"
+
+void USART_init(unsigned int ubrr){
+	UBRR0H = (unsigned char)(ubrr>>8); //set baud rate
+  88:	90 bd       	out	0x20, r25	; 32
+	UBRR0L = (unsigned char)ubrr;
+  8a:	89 b9       	out	0x09, r24	; 9
+	
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0); //Enable receiver and transmitter
+  8c:	88 e1       	ldi	r24, 0x18	; 24
+  8e:	8a b9       	out	0x0a, r24	; 10
+	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00); //Set frame format: 8data, 2stop bit
+  90:	8e e8       	ldi	r24, 0x8E	; 142
+  92:	80 bd       	out	0x20, r24	; 32
+  94:	08 95       	ret
+
+00000096 <USART_Transmit>:
+}
+
+void USART_Transmit (unsigned char data){
+	while ( !(UCSR0A & (1<<UDRE0)) );
+  96:	5d 9b       	sbis	0x0b, 5	; 11
+  98:	fe cf       	rjmp	.-4      	; 0x96 <USART_Transmit>
+	UDR0 = data;
+  9a:	8c b9       	out	0x0c, r24	; 12
+  9c:	08 95       	ret
+
+0000009e <USART_Receive>:
+}
+
+unsigned char USART_Receive (void){
+	while ( !(UCSR0A & (1<<RXC0)) );
+  9e:	5f 9b       	sbis	0x0b, 7	; 11
+  a0:	fe cf       	rjmp	.-4      	; 0x9e <USART_Receive>
+	return UDR0;
+  a2:	8c b1       	in	r24, 0x0c	; 12
+  a4:	08 95       	ret
+
+000000a6 <main>:
 int main(void)
 {
     /* Replace with your application code */
-	DDRC |= (1<<PC0);
-  88:	84 b3       	in	r24, 0x14	; 20
-  8a:	81 60       	ori	r24, 0x01	; 1
-  8c:	84 bb       	out	0x14, r24	; 20
+	/*DDRC |= (1<<PC0);*/
 	
+	DDRD &= ~(1<<PD0); 
+  a6:	81 b3       	in	r24, 0x11	; 17
+  a8:	8e 7f       	andi	r24, 0xFE	; 254
+  aa:	81 bb       	out	0x11, r24	; 17
+	DDRD |= (1<<PD1);
+  ac:	81 b3       	in	r24, 0x11	; 17
+  ae:	82 60       	ori	r24, 0x02	; 2
+  b0:	81 bb       	out	0x11, r24	; 17
+	
+	USART_init(BAUDVAL);
+  b2:	87 e6       	ldi	r24, 0x67	; 103
+  b4:	90 e0       	ldi	r25, 0x00	; 0
+  b6:	0e 94 44 00 	call	0x88	; 0x88 <USART_init>
     while (1) 
     {
-		PORTC ^= (1<<PC0);
-  8e:	95 b3       	in	r25, 0x15	; 21
-  90:	81 e0       	ldi	r24, 0x01	; 1
-  92:	89 27       	eor	r24, r25
-  94:	85 bb       	out	0x15, r24	; 21
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
+		/*PORTC ^= (1<<PC0);
+		_delay_ms(100);*/ //Square signal
+		
+		unsigned char data = USART_Receive();
+  ba:	0e 94 4f 00 	call	0x9e	; 0x9e <USART_Receive>
+		USART_Transmit(data);
+  be:	0e 94 4b 00 	call	0x96	; 0x96 <USART_Transmit>
+  c2:	fb cf       	rjmp	.-10     	; 0xba <main+0x14>
 
-	__builtin_avr_delay_cycles(__ticks_dc);
-  96:	2f ef       	ldi	r18, 0xFF	; 255
-  98:	81 ee       	ldi	r24, 0xE1	; 225
-  9a:	94 e0       	ldi	r25, 0x04	; 4
-  9c:	21 50       	subi	r18, 0x01	; 1
-  9e:	80 40       	sbci	r24, 0x00	; 0
-  a0:	90 40       	sbci	r25, 0x00	; 0
-  a2:	e1 f7       	brne	.-8      	; 0x9c <main+0x14>
-  a4:	00 c0       	rjmp	.+0      	; 0xa6 <main+0x1e>
-  a6:	00 00       	nop
-  a8:	f2 cf       	rjmp	.-28     	; 0x8e <main+0x6>
+000000c4 <_exit>:
+  c4:	f8 94       	cli
 
-000000aa <_exit>:
-  aa:	f8 94       	cli
-
-000000ac <__stop_program>:
-  ac:	ff cf       	rjmp	.-2      	; 0xac <__stop_program>
+000000c6 <__stop_program>:
+  c6:	ff cf       	rjmp	.-2      	; 0xc6 <__stop_program>
