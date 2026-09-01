@@ -7,8 +7,13 @@
 
 #include <avr/io.h>
 #include "USART.h"
+#include <stdio.h>
 
 void USART_init(unsigned int ubrr){
+
+	DDRD &= ~(1<<PD0); 
+	DDRD |= (1<<PD1);
+	
 	UBRR0H = (unsigned char)(ubrr>>8); //set baud rate
 	UBRR0L = (unsigned char)ubrr;
 	
@@ -24,4 +29,13 @@ void USART_Transmit (unsigned char data){
 unsigned char USART_Receive (void){
 	while ( !(UCSR0A & (1<<RXC0)) );
 	return UDR0;
+}
+
+int transmit( char c, FILE *stream){
+	USART_Transmit((unsigned char) c);
+	return 0;
+}
+
+int receive(FILE *stream){
+	return (int)USART_Receive();
 }

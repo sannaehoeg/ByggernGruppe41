@@ -8,11 +8,17 @@
 #ifndef USART_h
 #define USART_h
 
+#include <stdio.h>
+
 void USART_init(unsigned int ubrr);
 
 void USART_Transmit (unsigned char data);
 
 unsigned char USART_Receive (void);
+
+int transmit( char c, FILE *stream);
+
+int receive(FILE *stream);
 
 
 #endif 
