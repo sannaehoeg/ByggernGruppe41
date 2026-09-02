@@ -7,9 +7,9 @@
 
 //#define F_CPU 16000000UL
 #define F_CPU 4915200UL
-#define FOSC 4915200UL
+#define FOSC 4915200
 #define BAUD 9600
-#define BAUDVAL FOSC/16UL/BAUD-1
+#define BAUDVAL (FOSC/16/BAUD-1)
 
 #include <avr/io.h>
 #include <util/delay.h>

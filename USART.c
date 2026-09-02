@@ -11,8 +11,8 @@
 
 void USART_init(unsigned int ubrr){
 
-	DDRD &= ~(1<<PD0); 
-	DDRD |= (1<<PD1);
+	//DDRD &= ~(1<<PD0); 
+	//DDRD |= (1<<PD1);
 	
 	UBRR0H = (unsigned char)(ubrr>>8); //set baud rate
 	UBRR0L = (unsigned char)ubrr;
