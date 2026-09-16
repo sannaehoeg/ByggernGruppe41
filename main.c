@@ -30,12 +30,12 @@ int main(void)
 		/*PORTC ^= (1<<PC0);
 		_delay_ms(100);*/ //Square signal
 		
-		/*unsigned char data = USART_Receive();
+		unsigned char data = USART_Receive();
 		USART_Transmit(data);
-		_delay_ms(500);*/
+		_delay_ms(500);
 
-		printf("hello world");
-		_delay_ms(1000);
+		/*printf("hello world");
+		_delay_ms(1000);*/
 
     }
 	
