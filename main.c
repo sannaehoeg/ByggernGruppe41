@@ -15,14 +15,16 @@
 #include <util/delay.h>
 #include "USART.h"
 #include "SRAM_Test.h"
+#include "ADC.h"
 #include <stdio.h>
+#include <stdint.h>
 
 int main(void)
 {
     /* Replace with your application code */
-	/*DDRC |= (1<<PC0);*/
-	
+	DDRC = 0xFF;
 	USART_init(BAUDVAL);
+	adc_clock_init(); 
 
 	fdevopen(transmit, receive);
 
@@ -32,6 +34,8 @@ int main(void)
 
 	volatile char *sram_addr = (char *)0x1800;
 	volatile char *adc_addr = (char *)0x1000;
+
+	uint8_t x_val, y_val;
 
     while (1) 
     {
@@ -50,12 +54,16 @@ int main(void)
 		counter++;
 		_delay_ms(1000);*/
 
-		/*sram_addr = 0xAA; //Skriver til SRAM-adresse -> CS_SRAM bør bli aktiv (lav)
+		/**sram_addr = 0xAA; //Skriver til SRAM-adresse -> CS_SRAM bør bli aktiv (lav)
 		_delay_ms(1000);
 		*adc_addr = 0xAA; //Skriver til ADC-adresse -> CS_ADC bør bli aktiv (lav)
 		_delay_ms(1000);*/
 
-		SRAM_test();
+		//SRAM_test();
+
+		adc_read_joystick(&y_val, &x_val);
+		printf("X: %3d	Y: %3\n", x_val, y_val);
+		_delay_ms(200);
 
     }
 	
