@@ -35,7 +35,9 @@ int main(void)
 	volatile char *sram_addr = (char *)0x1800;
 	volatile char *adc_addr = (char *)0x1000;
 
-	uint8_t x_val, y_val;
+	int8_t x_val, y_val, x_pad, y_pad;
+	uint8_t x_null, y_null, xpad_null, ypad_null;
+	adc_calibration(&x_null, &y_null, &ypad_null, &xpad_null);
 
     while (1) 
     {
@@ -61,9 +63,11 @@ int main(void)
 
 		//SRAM_test();
 
-		adc_read_joystick(&y_val, &x_val);
-		printf("X: %3d	Y: %3\n", x_val, y_val);
-		_delay_ms(200);
+		adc_read_joystick(&y_val, &x_val, &x_pad, &y_pad, x_null, y_null, xpad_null, ypad_null);
+		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", x_val, y_val, x_pad, y_pad);
+		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet
+		
+
 
     }
 	
