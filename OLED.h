@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <util/delay.h>
+#define F_CPU 4915200UL
 
 enum Font {
 	SMALL,

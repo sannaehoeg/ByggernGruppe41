@@ -5,9 +5,12 @@
 
 void SPI_init(void){
 
-	DDRB |= (1 << PB5) | (1 << PB7); //Setter de som outputs - MOSI
-	DDRB &= ~(1 << PB6); //MISO - settess høy
 	PORTD |= (1 << PD2) | (1 << PD3) | (1 << PD4); //Setter alle til 1
+	DDRD |= (1 << PD2) | (1 << PD3) | (1 << PD4);
+
+	DDRB |= (1 << PB4) | (1 << PB5) | (1 << PB7); //Setter de som outputs - MOSI
+	DDRB &= ~(1 << PB6); //MISO - settess høy
+	
 	SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0); //SPE er SPI Enable som 'skrus på' ved å sette til 1. MSTR gjør at vi kan sette SS_, setter klokkehastighet til F_CPU/16
 	//SPCR = SPI conroll register
 }
@@ -23,6 +26,10 @@ void SPI_select(enum Slave slave){
 		case(CAN): PORTD &= ~(1 << PD4); break;
 
 	}
+}
+
+void SPI_deselect(void){
+	PORTD |= (1 << PD2) | (1 << PD3) | (1 << PD4);
 }
 
 void SPI_transmit(uint8_t cData){
@@ -48,7 +55,7 @@ void SPI_transmit_n(uint8_t* data, uint16_t length){
 }
 
 void SPI_receive_n(uint8_t* dataRec, uint16_t length){
-	
+
 	for (uint16_t i = 0; i < length; i++){
 		dataRec[i] = SPI_receive();
 	}

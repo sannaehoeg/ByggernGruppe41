@@ -14,6 +14,8 @@ void SPI_init(void);
 
 void SPI_select(enum Slave slave);
 
+void SPI_deselect(void);
+
 void SPI_transmit(uint8_t cData);
 
 uint8_t SPI_receive(void);

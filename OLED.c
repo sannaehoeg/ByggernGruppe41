@@ -7,19 +7,26 @@
 
 void OLED_command(uint8_t command){
 
-	DDRB &= ~(1 << PB0); //Setter D/C lav for at dataen skal være en kommando
+	PORTB &= ~(1 << PB2); //Setter D/C lav for at dataen skal være en kommando
 	SPI_select(OLED);
 	SPI_transmit(command);
+	SPI_deselect();
 }
 
 void OLED_data(uint8_t data){
 
-	DDRB |= (1 << PB0); //Setter D/C høy for at dataen skal være data
+	PORTB |= (1 << PB2); //Setter D/C høy for at dataen skal være data
 	SPI_select(OLED);
 	SPI_transmit(data);
+	SPI_deselect();
 }
 
 void OLED_init(void){
+
+	DDRB |= (1 << PB2); //Setter den som utgang
+
+	//OLED_command(0xFD); 
+	//OLED_command(0x12); //Unlock
 
 	OLED_command(0xA1); //Speiler kolonnene
 	OLED_command(0xC8); //Speiler radene
@@ -27,6 +34,8 @@ void OLED_init(void){
 
 	OLED_command(0x20); //Sets adressing mode
 	OLED_command(0x00); //Sets it to horizontal adressing mode
+
+	OLED_clear();
 
 }
 
@@ -84,6 +93,7 @@ void OLED_print_char(char c, enum Font font){
 				uint8_t data = pgm_read_byte(&font5[index][i]);
 				OLED_data(data);
 			}
+			OLED_data(0x00);
 			break;
 
 		case(LARGE):

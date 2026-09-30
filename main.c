@@ -20,6 +20,8 @@
 #include <stdint.h>
 #include "SPI.h"
 #include "OLED.h"
+#include "OLED_IF.h"
+#include "Joystick.h"
 
 
 int main(void)
@@ -28,9 +30,12 @@ int main(void)
 	DDRC = 0xFF;
 
 	USART_init(BAUDVAL);
-	//SPI_init();
+	SPI_init();
 	OLED_init();
 	adc_clock_init(); 
+	OLED_start_up();
+	uint8_t pil_pos=0;
+	OLED_starting_meny(pil_pos);
 
 	fdevopen(transmit, receive);
 	uint8_t counter = 0;
@@ -43,6 +48,10 @@ int main(void)
 	int8_t x_val, y_val, x_pad, y_pad;
 	uint8_t x_null, y_null, xpad_null, ypad_null;
 	adc_calibration(&x_null, &y_null, &ypad_null, &xpad_null);
+	enum Joystick_dir direction;
+	direction = NONE;
+	
+
 
     while (1) 
     {
@@ -68,9 +77,17 @@ int main(void)
 
 		//SRAM_test();
 
-		adc_read_joystick(&y_val, &x_val, &x_pad, &y_pad, x_null, y_null, xpad_null, ypad_null);
+		/*adc_read_joystick(&y_val, &x_val, &x_pad, &y_pad, x_null, y_null, xpad_null, ypad_null);
 		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", x_val, y_val, x_pad, y_pad);
-		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet
+		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet*/
+
+		adc_read_joystick(&y_val, &x_val, &x_pad, &y_pad, x_null, y_null, xpad_null, ypad_null);
+		set_direction( x_val, y_val, &direction);
+		move_pil(&direction, &pil_pos, &x_val, &y_val, x_null, y_null);
+		//printf("Direction: %3d\n\r", direction);
+		
+		
+		//OLED_clear();
 		
     }
 	
