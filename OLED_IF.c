@@ -4,7 +4,7 @@
 
 void OLED_start_up(void){
 
-	OLED_pos(3, 50);
+	OLED_pos(3, 45);
 	char text[] = "Hello";
 	OLED_print_str(text, LARGE);
 	_delay_ms(3000);
@@ -29,20 +29,21 @@ void OLED_starting_meny(uint8_t pil_pos){
 	OLED_print_str(linje3, MEDIUM);
 }
 
-void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, int8_t* x_val, int8_t *y_val, uint8_t x_null, uint8_t y_null){
-	if(*direction == DOWN && *pil_pos<3){
+void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy){
+	if(*direction == NONE){return;}
+	if(*direction == DOWN && *pil_pos<2){
 		(*pil_pos)++;
 		while(!(*direction== NONE)){
-			adc_read_joystick(x_val, y_val, 0, 0, 0, 0, 0, 0);
-			set_direction(*x_val, *y_val, direction);
+			adc_read_joystick(xy);
+			set_direction(*xy, direction);
 		}
 		OLED_starting_meny(*pil_pos);
 	}
 	if(*direction == UP && *pil_pos>0){
 		(*pil_pos)--;
 		while(!(*direction== NONE)){
-			adc_read_joystick(x_val, y_val, 0, 0, 0, 0, 0, 0);
-			set_direction(*x_val, *y_val, direction);
+			adc_read_joystick(xy);
+			set_direction(*xy, direction);
 		}
 		OLED_starting_meny(*pil_pos);
 	}

@@ -7,7 +7,7 @@ void OLED_start_up(void);
 
 void OLED_starting_meny(uint8_t pil_pos);
 
-void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, int8_t* x_val, int8_t* y_val, uint8_t x_null, uint8_t y_null);
+void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy);
 
 
 #endif 

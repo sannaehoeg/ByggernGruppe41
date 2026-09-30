@@ -21,37 +21,37 @@ void adc_start_conversion(void){
 	
 }
 
-void adc_calibration(uint8_t *x_null, uint8_t *y_null, uint8_t *ypad_null, uint8_t *xpad_null){
+void adc_calibration(IO_board* xy){
 	adc_start_conversion();
-	*y_null = adc_ptr[0];
-	*x_null = adc_ptr[0];
-	*ypad_null = adc_ptr[0];
-	*xpad_null = adc_ptr[0];
+	xy->y_null = adc_ptr[0];
+	xy->x_null = adc_ptr[0];
+	xy->ypad_null = adc_ptr[0];
+	xy->ypad_null = adc_ptr[0];
 
 }
 
-void adc_read_joystick(int8_t *y, int8_t *x, int8_t *xpad, int8_t *ypad, uint8_t x_null, uint8_t y_null, uint8_t xpad_null, uint8_t ypad_null){
+void adc_read_joystick(IO_board* xy){
 	adc_start_conversion();
 
 	uint8_t y_uk = adc_ptr[0]; //finner den styrte verdien til y_joystick
-	if (y_uk >= y_null) {*y = (int16_t)(y_uk-y_null)*100/(244-y_null);} //skalerer verdien for å få -100 til 100
-	else {*y = -(int16_t)(y_null-y_uk)*100/(y_null-70);}
+	if (y_uk >= xy->y_null) {xy->y_val = (int16_t)(y_uk-xy->y_null)*100/(244-xy->y_null);} //skalerer verdien for å få -100 til 100
+	else {xy->y_val = -(int16_t)(xy->y_null-y_uk)*100/(xy->y_null-70);}
 	
-	if (*y > 100){*y = 100;} 
-	if (*y<-100){*y=-100;}
+	if (xy->y_val > 100){xy->y_val = 100;} 
+	if (xy->y_val<-100){xy->y_val=-100;}
 
 	uint8_t x_uk = adc_ptr[0];
-	if (x_uk >= x_null) {*x = (int16_t)(x_uk-x_null)*100/(245-x_null);} 
-	else {*x = -(int16_t)(x_null-x_uk)*100/(x_null-63);}
+	if (x_uk >= xy->x_null) {xy->x_val = (int16_t)(x_uk-xy->x_null)*100/(245-xy->x_null);} 
+	else {xy->x_val = -(int16_t)(xy->x_null-x_uk)*100/(xy->x_null-63);}
 	
-	if (*x > 100){*x = 100;} 
-	if (*x<-100){*x=-100;}
+	if (xy->x_val > 100){xy->x_val = 100;} 
+	if (xy->x_val<-100){xy->x_val=-100;}
 	
 	uint8_t ypad_uk = adc_ptr[0];
-	*ypad = (ypad_uk-127)*100/127;
+	xy->y_pad = (ypad_uk-127)*100/127;
 	
 	uint8_t xpad_uk = adc_ptr[0];
-	*xpad = (xpad_uk -127)*100/127;
+	xy->x_pad = (xpad_uk -127)*100/127;
 
 	
 

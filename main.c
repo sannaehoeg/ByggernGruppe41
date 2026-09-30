@@ -45,9 +45,10 @@ int main(void)
 	volatile char *sram_addr = (char *)0x1800;
 	volatile char *adc_addr = (char *)0x1000;
 
-	int8_t x_val, y_val, x_pad, y_pad;
-	uint8_t x_null, y_null, xpad_null, ypad_null;
-	adc_calibration(&x_null, &y_null, &ypad_null, &xpad_null);
+	//int8_t x_val, y_val, x_pad, y_pad;
+	//uint8_t x_null, y_null, xpad_null, ypad_null;
+	IO_board xy;
+	adc_calibration(&xy);
 	enum Joystick_dir direction;
 	direction = NONE;
 	
@@ -81,9 +82,10 @@ int main(void)
 		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", x_val, y_val, x_pad, y_pad);
 		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet*/
 
-		adc_read_joystick(&y_val, &x_val, &x_pad, &y_pad, x_null, y_null, xpad_null, ypad_null);
-		set_direction( x_val, y_val, &direction);
-		move_pil(&direction, &pil_pos, &x_val, &y_val, x_null, y_null);
+		adc_read_joystick(&xy);
+		set_direction(xy, &direction);
+		move_pil(&direction, &pil_pos, &xy);
+		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
 		//printf("Direction: %3d\n\r", direction);
 		
 		
