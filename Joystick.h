@@ -18,6 +18,7 @@ typedef struct {
 
 void set_direction(IO_board xy, enum Joystick_dir* direction);
 
+uint8_t btn_pressed(void);
 
 
 

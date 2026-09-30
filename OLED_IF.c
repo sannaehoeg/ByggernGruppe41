@@ -50,4 +50,10 @@ void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy){
 }
 
 
+void OLED_update(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy){
+	adc_read_joystick(xy);
+	set_direction(*xy, direction);
+	move_pil(direction, pil_pos, xy);
+}
+
 

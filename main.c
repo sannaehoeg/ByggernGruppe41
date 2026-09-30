@@ -22,6 +22,7 @@
 #include "OLED.h"
 #include "OLED_IF.h"
 #include "Joystick.h"
+#include "tilstandsmaskin.h"
 
 
 int main(void)
@@ -51,6 +52,9 @@ int main(void)
 	adc_calibration(&xy);
 	enum Joystick_dir direction;
 	direction = NONE;
+
+	enum States state;
+	state = Menu;
 	
 
 
@@ -82,10 +86,12 @@ int main(void)
 		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", x_val, y_val, x_pad, y_pad);
 		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet*/
 
-		adc_read_joystick(&xy);
-		set_direction(xy, &direction);
-		move_pil(&direction, &pil_pos, &xy);
-		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
+		//adc_read_joystick(&xy);
+		//set_direction(xy, &direction);
+		//move_pil(&direction, &pil_pos, &xy);
+		//printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
+		state_machine(&state, xy, direction, pil_pos);
+		printf((char*)btn_pressed());
 		//printf("Direction: %3d\n\r", direction);
 		
 		

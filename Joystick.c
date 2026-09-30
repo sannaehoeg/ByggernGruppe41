@@ -2,6 +2,7 @@
 #include "Joystick.h"
 #include "ADC.h"
 #include <stdlib.h>
+#include <avr/io.h>
 
 
 void set_direction(IO_board xy, enum Joystick_dir* direction){
@@ -22,5 +23,12 @@ void set_direction(IO_board xy, enum Joystick_dir* direction){
             *direction = UP;
         }
     }
+
+}
+
+uint8_t btn_pressed(void){
+
+	DDRB &= ~(1 << PB3);
+	return !(PINB&(1<<PB3));
 
 }
