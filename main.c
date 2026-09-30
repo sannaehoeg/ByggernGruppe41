@@ -18,16 +18,21 @@
 #include "ADC.h"
 #include <stdio.h>
 #include <stdint.h>
+#include "SPI.h"
+#include "OLED.h"
+
 
 int main(void)
 {
-    /* Replace with your application code */
+
 	DDRC = 0xFF;
+
 	USART_init(BAUDVAL);
+	//SPI_init();
+	OLED_init();
 	adc_clock_init(); 
 
 	fdevopen(transmit, receive);
-
 	uint8_t counter = 0;
 
 	MCUCR |= (1<<SRE); //Writing SRE to1 enables the External Memory Iinterface (taken from AVR datasheet s. 30)
@@ -67,8 +72,6 @@ int main(void)
 		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", x_val, y_val, x_pad, y_pad);
 		_delay_ms(200); //leser bare joysticken 5 ganger i sekundet
 		
-
-
     }
 	
 	return 0;

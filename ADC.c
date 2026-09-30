@@ -16,7 +16,7 @@ void adc_clock_init(void){
 }
 
 void adc_start_conversion(void){
-	*adc_ptr = 0x1;
+	*adc_ptr = 0x1; //Starts the write functioon
 	_delay_ms(10);
 	
 }
