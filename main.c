@@ -23,6 +23,9 @@
 #include "OLED_IF.h"
 #include "Joystick.h"
 #include "tilstandsmaskin.h"
+#include "mcp2515.h"
+#include "_mcp2515.h"
+#include "CAN_com.h"
 
 
 int main(void)
@@ -34,6 +37,9 @@ int main(void)
 	SPI_init();
 	OLED_init();
 	adc_clock_init(); 
+	can_init();
+
+
 	OLED_start_up();
 	uint8_t pointer_pos=0;
 	OLED_starting_meny(pointer_pos);
@@ -56,7 +62,8 @@ int main(void)
 	enum States state;
 	state = Menu;
 	
-
+	can_message_t tx = {.id = 0x123, .length = 3, .data = {0xAA, 0xBB, 0xCC}};
+	can_message_t rx;
 
     while (1) 
     {
@@ -89,14 +96,23 @@ int main(void)
 		//adc_read_joystick(&xy);
 		//set_direction(xy, &direction);
 		//move_pil(&direction, &pointer_pos, &xy);
-		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
-		state_machine(&state, &xy, &direction, &pointer_pos);
+		//printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
+		//state_machine(&state, &xy, &direction, &pointer_pos);
 		//printf((char*)pointer_pos);
 		//printf("Direction: %3d\n\r", direction);
-		
+	
 		
 		//OLED_clear();
-		
+
+		can_transmit(&tx);
+		_delay_ms(10);
+
+		rx = can_receive();
+		printf("sent: id=%03X len=%d data=%02X %02X %02X\n", tx.id, tx.length, tx.data[0], tx.data[1], tx.data[2]);
+		printf("received: id=%03X len=%d data=%02X %02X %02X\n", rx.id, rx.length, rx.data[0], rx.data[1], rx.data[2]);
+
+		tx.data[0]++;
+		_delay_ms(1000);
     }
 	
 	return 0;
