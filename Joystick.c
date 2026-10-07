@@ -6,7 +6,7 @@
 
 
 void set_direction(IO_board xy, enum Joystick_dir* direction){
-	if(abs(xy.x_val)<=5 && abs(xy.y_val)<=5){
+	if(abs(xy.x_val)<=10 && abs(xy.y_val)<=10){
 		*direction = NONE;
 		return;
 	}
@@ -29,6 +29,9 @@ void set_direction(IO_board xy, enum Joystick_dir* direction){
 uint8_t btn_pressed(void){
 
 	DDRB &= ~(1 << PB3);
-	return !(PINB&(1<<PB3));
+	uint8_t pressed = !(PINB&(1<<PB3));
+	while(!(PINB&(1<<PB3))){
+	}
+	return pressed;
 
 }

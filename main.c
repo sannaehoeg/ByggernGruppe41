@@ -35,8 +35,8 @@ int main(void)
 	OLED_init();
 	adc_clock_init(); 
 	OLED_start_up();
-	uint8_t pil_pos=0;
-	OLED_starting_meny(pil_pos);
+	uint8_t pointer_pos=0;
+	OLED_starting_meny(pointer_pos);
 
 	fdevopen(transmit, receive);
 	uint8_t counter = 0;
@@ -88,10 +88,10 @@ int main(void)
 
 		//adc_read_joystick(&xy);
 		//set_direction(xy, &direction);
-		//move_pil(&direction, &pil_pos, &xy);
-		//printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
-		state_machine(&state, xy, direction, pil_pos);
-		printf((char*)btn_pressed());
+		//move_pil(&direction, &pointer_pos, &xy);
+		printf("X_joy: %3d	Y_joy: %3d	X_pad:%3d 	Y_pad: %3d\n\r", xy.x_val, xy.y_val, xy.x_pad, xy.y_pad);
+		state_machine(&state, &xy, &direction, &pointer_pos);
+		//printf((char*)pointer_pos);
 		//printf("Direction: %3d\n\r", direction);
 		
 		

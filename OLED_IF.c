@@ -10,9 +10,9 @@ void OLED_start_up(void){
 	_delay_ms(3000);
 }
 
-void OLED_starting_meny(uint8_t pil_pos){
+void OLED_starting_meny(uint8_t pointer_pos){
 	OLED_clear();
-	OLED_pos(pil_pos, 0);
+	OLED_pos(pointer_pos, 0);
 	char pil[] = "->";
 	OLED_print_str(pil, MEDIUM);
 
@@ -29,31 +29,41 @@ void OLED_starting_meny(uint8_t pil_pos){
 	OLED_print_str(linje3, MEDIUM);
 }
 
-void move_pil(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy){
-	if(*direction == NONE){return;}
-	if(*direction == DOWN && *pil_pos<2){
-		(*pil_pos)++;
-		while(!(*direction== NONE)){
-			adc_read_joystick(xy);
-			set_direction(*xy, direction);
+void move_pil(enum Joystick_dir* direction, uint8_t* pointer_pos, IO_board* xy, enum States* state){
+	switch (*state){
+
+	case (Menu):
+		if(*direction == NONE){return;}
+		if(*direction == DOWN && *pointer_pos<2){
+			(*pointer_pos)++;
+			while(!(*direction== NONE)){
+				adc_read_joystick(xy);
+				set_direction(*xy, direction);
+			}
+			OLED_starting_meny(*pointer_pos);
+		}else if(*direction == DOWN && *pointer_pos>= 2){
+			return;
 		}
-		OLED_starting_meny(*pil_pos);
-	}
-	if(*direction == UP && *pil_pos>0){
-		(*pil_pos)--;
-		while(!(*direction== NONE)){
-			adc_read_joystick(xy);
-			set_direction(*xy, direction);
+		if(*direction == UP && *pointer_pos>0){
+			(*pointer_pos) -= 1;
+			while(!(*direction== NONE)){
+				adc_read_joystick(xy);
+				set_direction(*xy, direction);
+			}
+			OLED_starting_meny(*pointer_pos);
+		}else if(*direction == UP && *pointer_pos == 0){
+			return;
 		}
-		OLED_starting_meny(*pil_pos);
+		break;
 	}
+
 }
 
 
-void OLED_update(enum Joystick_dir* direction, uint8_t* pil_pos, IO_board* xy){
+void OLED_update(enum Joystick_dir* direction, uint8_t* pointer_pos, IO_board* xy, enum States* state){
 	adc_read_joystick(xy);
 	set_direction(*xy, direction);
-	move_pil(direction, pil_pos, xy);
+	move_pil(direction, pointer_pos, xy, state);
 }
 
 
