@@ -3,7 +3,6 @@
 #include "sam.h"
 #include "uart.h"
 #include "can.h"
-#include "../node1/CAN_com.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -35,6 +34,9 @@ int main()
 
 	uart_init(F_CPU, BAUDRATE);
 
+	CanInit init = {0};
+	can_init(init, 0);
+
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 
@@ -45,10 +47,9 @@ int main()
 		
 		//uart_tx('a');
 
-		if(!can_rx(&rx)){
-			printf("RX id=%d len=%d\n", rx.id, rx.length);
+		if(can_rx(&rx)){
+			can_printmsg(rx);
 		}
-		
 		
     }
     

@@ -118,9 +118,12 @@ int main(void)
 		tx.data[0]++;
 		_delay_ms(1000);*/
 
-		can_transmit(&msg);
+		
+		/*can_transmit(&msg);
 		printf("Node 1 sent\n");
-		_delay_ms(500);
+		_delay_ms(500);*/
+
+		can_send_joystck(&xy);
 
 
     }

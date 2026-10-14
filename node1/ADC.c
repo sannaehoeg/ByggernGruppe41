@@ -1,6 +1,7 @@
 
 #include "ADC.h"
 #include <avr/io.h>
+#define CAN_ID_JOYSTICK 1
 
 
 volatile char *adc_ptr = (char *)0x1000;
@@ -26,7 +27,7 @@ void adc_calibration(IO_board* xy){
 	xy->y_null = adc_ptr[0];
 	xy->x_null = adc_ptr[0];
 	xy->ypad_null = adc_ptr[0];
-	xy->ypad_null = adc_ptr[0];
+	xy->xpad_null = adc_ptr[0];
 
 }
 
@@ -53,6 +54,13 @@ void adc_read_joystick(IO_board* xy){
 	uint8_t xpad_uk = adc_ptr[0];
 	xy->x_pad = (xpad_uk -127)*100/127;
 
-	
+
+}
+
+void can_send_joystck(IO_board* xy){
+	adc_read_joystick(xy);
+	can_message_t msg = {.id =CAN_ID_JOYSTICK, .length = 2, .data = {xy->x_val, xy->y_val}};
+	can_transmit(&msg);
+
 
 }
