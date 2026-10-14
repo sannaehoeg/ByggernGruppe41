@@ -11,9 +11,9 @@ uint8_t can_init(void){
 		return 1;
 	}
 
-	mcp2515_write(MCP_CNF1, 0x03); //125 kbps
-	mcp2515_write(MCP_CNF2, 0xAA);
-	mcp2515_write(MCP_CNF3, 0x05);
+	mcp2515_write(MCP_CNF1, 0x03); //SJW = 1 TQ, BRP = 3 -> TQ = 2*(3+1)/ 16MHz = 500ns
+	mcp2515_write(MCP_CNF2, 0xAA); //
+	mcp2515_write(MCP_CNF3, 0x05); 
 	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
 
 	status = mcp2515_read(MCP_CANSTAT);

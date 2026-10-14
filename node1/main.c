@@ -28,6 +28,7 @@
 #include "CAN_com.h"
 
 
+
 int main(void)
 {
 
@@ -104,7 +105,8 @@ int main(void)
 		
 		//OLED_clear();
 
-		can_transmit(&tx);
+
+		/*can_transmit(&tx);
 		_delay_ms(10);
 
 		rx = can_receive();
@@ -112,7 +114,9 @@ int main(void)
 		printf("received: id=%03X len=%d data=%02X %02X %02X\n", rx.id, rx.length, rx.data[0], rx.data[1], rx.data[2]);
 
 		tx.data[0]++;
-		_delay_ms(1000);
+		_delay_ms(1000);*/
+
+
     }
 	
 	return 0;
