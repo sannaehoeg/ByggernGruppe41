@@ -12,7 +12,7 @@ typedef struct { //Generated code
 } can_message_t;
 
 
-uint8_t can_init(void);
+uint8_t CAN_init(void);
 
 void can_transmit(can_message_t* msg);
 

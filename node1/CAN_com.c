@@ -2,7 +2,7 @@
 #include "mcp2515.h"
 
 
-uint8_t can_init(void){
+uint8_t CAN_init(void){
 
 	mcp2515_reset();
 	uint8_t status = mcp2515_read(MCP_CANSTAT);
@@ -14,11 +14,11 @@ uint8_t can_init(void){
 	mcp2515_write(MCP_CNF1, 0x03); //SJW = 1 TQ, BRP = 3 -> TQ = 2*(3+1)/ 16MHz = 500ns
 	mcp2515_write(MCP_CNF2, 0xAA); //
 	mcp2515_write(MCP_CNF3, 0x05); 
-	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+	mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
 
 	status = mcp2515_read(MCP_CANSTAT);
-	if ((status & 0xE0) != 0x40){
-		printf("Loopback mode not set. CANSTAT is: 0x%02X\n", status);
+	if ((status & 0xE0) != MODE_NORMAL){
+		printf("Normal mode not set. CANSTAT is: 0x%02X\n", status);
 		return 1;
 	}
 

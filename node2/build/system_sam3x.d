@@ -72,4 +72,4 @@ build/system_sam3x.o: sam/sam3x/source/system_sam3x.c \
  sam/sam3x/include/instance/instance_rtc.h \
  sam/sam3x/include/instance/instance_gpbr.h \
  sam/sam3x/include/pio/pio_sam3x8e.h sam/interrupt.h \
- sam/interrupt/interrupt_sam_nvic.h
+ sam/interrupt/interrupt_sam_nvic.h sam/sam3x/include/sam3x8e.h

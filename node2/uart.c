@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #define F_CPU 84000000
-#define BAUDRATE 9600
 
 typedef struct RingBuf RingBuf;
 struct RingBuf {

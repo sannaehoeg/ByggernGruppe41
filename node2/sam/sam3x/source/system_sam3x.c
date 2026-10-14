@@ -37,6 +37,7 @@
 
 #include "system_sam3x.h"
 #include "sam3xa.h"
+#include "sam3x8e.h"
 
 /* @cond 0 */
 /**INDENT-OFF**/

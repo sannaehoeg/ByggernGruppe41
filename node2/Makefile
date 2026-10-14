@@ -55,10 +55,10 @@ clean:
 
 .PHONY: debug
 debug: $(ELF)
-	if pgr openocd; then killall -s 9 openocd; fi
-	x-terminal-emulator -e openocd -f sam/openocd.cfg -c "program $(ELF) verify"
+	if pgrep openocd; then killall -s 9 openocd; fi
+	x-terminal-emulator -e /opt/openocd/bin/openocd -f sam/openocd.cfg -c "program $(ELF) verify"
 	sleep 5
-	arm-eabi-gdb -tui -iex "target extended-remote localhost:3333" $(ELF)
+	gdb-multiarch -tui -iex "target extended-remote localhost:3333" $(ELF)
 	killall -s 9 openocd	
 
 .PHONY: flash

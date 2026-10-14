@@ -3,6 +3,7 @@
 #include "sam.h"
 #include "uart.h"
 #include "can.h"
+#include "../node1/CAN_com.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -21,24 +22,33 @@
 
 int main()
 {
+
+	//PMC->PMC_PCER0 |= (1<<ID_PIOB); //Peripheral clock enable register 0 
+		
+	//PIOB->PIO_PER = PIO_PB13; //Sets it as a PIO Control
+	//PIOB->PIO_OER = PIO_PB13; //Sets PB13 as output
+	//PIOB->PIO_SODR = PIO_PB13; //Sets it high (Set Output Data Register)
+
     SystemInit();
-	uart_init(F_CPU, BAUDRATE);
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
-
-	PMC->PMC_PCER0 |= (1<<ID_PIOB); //Peripheral clock enable register 0 
-		
-	PIOB->PIO_PER = PIO_PB13; //Sets it as a PIO Control
-	PIOB->PIO_OER = PIO_PB13; //Sets PB13 as output
-	PIOB->PIO_SODR = PIO_PB13; //Sets it high (Set Output Data Register)
+	uart_init(F_CPU, BAUDRATE);
 
 
+	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
+
+	CanMsg rx;
     while (1)
     {
+		//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
+		
+		//uart_tx('a');
+
+		if(!can_rx(&rx)){
+			printf("RX id=%d len=%d\n", rx.id, rx.length);
+		}
+		
 		
     }
     

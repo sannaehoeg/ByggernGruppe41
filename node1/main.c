@@ -38,7 +38,7 @@ int main(void)
 	SPI_init();
 	OLED_init();
 	adc_clock_init(); 
-	can_init();
+	CAN_init();
 
 
 	OLED_start_up();
@@ -63,8 +63,10 @@ int main(void)
 	enum States state;
 	state = Menu;
 	
-	can_message_t tx = {.id = 0x123, .length = 3, .data = {0xAA, 0xBB, 0xCC}};
-	can_message_t rx;
+	//can_message_t tx = {.id = 0x123, .length = 3, .data = {0xAA, 0xBB, 0xCC}};
+	//can_message_t rx;
+
+	can_message_t msg = { .id = 5, .length = 3, .data = {1, 2, 3}};
 
     while (1) 
     {
@@ -115,6 +117,10 @@ int main(void)
 
 		tx.data[0]++;
 		_delay_ms(1000);*/
+
+		can_transmit(&msg);
+		printf("Node 1 sent\n");
+		_delay_ms(500);
 
 
     }
