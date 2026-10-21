@@ -3,6 +3,8 @@
 #include "sam.h"
 #include "uart.h"
 #include "can.h"
+#include "PWM.h"
+#include "servo.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -26,7 +28,8 @@ int main()
 		
 	//PIOB->PIO_PER = PIO_PB13; //Sets it as a PIO Control
 	//PIOB->PIO_OER = PIO_PB13; //Sets PB13 as output
-	//PIOB->PIO_SODR = PIO_PB13; //Sets it high (Set Output Data Register)
+	//PIOB->PIO_SODR = PIO_PB13; //Sets it high (Set Output Data Register)        
+	
 
     SystemInit();
 
@@ -36,7 +39,7 @@ int main()
 
 	CanInit init = {0};
 	can_init(init, 0);
-
+	PWM_init();
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 
@@ -49,6 +52,9 @@ int main()
 
 		if(can_rx(&rx)){
 			can_printmsg(rx);
+			uint16_t ticks = servo_find_ticks(rx);
+			PWM_set_DC(ticks);
+			printf("Ticks: %d\n\r", ticks);
 		}
 		
     }
