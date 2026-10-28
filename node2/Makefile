@@ -12,7 +12,8 @@ SOURCE_FILES = \
 	uart.c \
 	time.c \
 	PWM.c \
-	servo.c
+	servo.c \
+	IR.c
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

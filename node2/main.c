@@ -5,6 +5,7 @@
 #include "can.h"
 #include "PWM.h"
 #include "servo.h"
+#include "IR.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -40,6 +41,7 @@ int main()
 	CanInit init = {0};
 	can_init(init, 0);
 	PWM_init();
+	ir_init();
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 
@@ -51,12 +53,18 @@ int main()
 		//uart_tx('a');
 
 		if(can_rx(&rx)){
-			can_printmsg(rx);
+			//can_printmsg(rx);
 			uint16_t ticks = servo_find_ticks(rx);
 			PWM_set_DC(ticks);
-			printf("Ticks: %d\n\r", ticks);
+			//printf("Ticks: %d\n\r", ticks);
 		}
-		
+
+		//uint16_t value = adc_read();
+		//printf("Value: %u\n\r", (unsigned int)value);
+		score_update();
+		uint8_t score = score_get();
+		printf("Score: %u\n\r", score);
+
     }
     
 }
