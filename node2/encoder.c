@@ -30,9 +30,9 @@ void encoder_init(void){
 	PIOC->PIO_CODR = PIO_PC23; //starts low (clear output data register)
 
 	PIOB->PIO_PDR = PIO_PB12; //disables PIO on pin 12
-	PIOB->PIO_ABSR = PIO_PB12; //selects peripheral B 
+	PIOB->PIO_ABSR |= PIO_PB12; //selects peripheral B 
 
-	PWM->PWM_CH_NUM[0].PWM_CMR = PWM_CMR_CPRE_MCK; //sets channel 0 to use MCK
+	PWM->PWM_CH_NUM[0].PWM_CMR = PWM_CMR_CPRE_MCK | PWM_CMR_CPOL; //sets channel 0 to use MCK and polarity
 	PWM->PWM_CH_NUM[0].PWM_CPRD = PWM_CPRD_CPRD(840);
 	PWM->PWM_CH_NUM[0].PWM_CDTY = PWM_CDTY_CDTY(0);  //sets CDTY = 0
 
@@ -42,6 +42,25 @@ void encoder_init(void){
 
 uint32_t encoder_read(void){
 	return TC2->TC_CHANNEL[0].TC_CV;
+}
+
+void set_motor_dir(int8_t value){
+	if(value <= 0){
+		PIOC->PIO_SODR = PIO_PC23; // sets high
+		}else{
+			PIOC->PIO_CODR = PIO_PC23; //sets low
+		}
+}
+
+void set_motor_speed(int8_t value){
+
+	uint32_t duty = (uint32_t)abs(value) * 840 / 100;
+
+	if(duty > 420){ //sets limit for maximum speed (30%)
+		duty = 420;
+	}
+	PWM->PWM_CH_NUM[0].PWM_CDTYUPD = PWM_CDTYUPD_CDTYUPD(duty); //sets duty cycle based on x-val
+
 }
 
 void set_motor_pos_and_dir(CanMsg m){
@@ -58,21 +77,3 @@ void set_motor_pos_and_dir(CanMsg m){
 	return;
 }
 
-void set_motor_dir(int8_t value){
-	if(value <= 0){
-		PIOC->PIO_SODR = PIO_PC23; // sets high
-		}else{
-			PIOC->PIO_CODR = PIO_PC23; //sets low
-		}
-}
-
-void set_motor_speed(int8_t value){
-
-	uint8_t duty = abs(value) * 840 / 100;
-
-	if(duty > 252){ //sets limit for maximum speed (30%)
-		duty = 252;
-	}
-	PWM->PWM_CH_NUM[0].PWM_CDTYUPD = PWM_CDTYUPD_CDTYUPD(duty); //sets duty cycle based on x-val
-
-}
