@@ -44,6 +44,7 @@ int main()
 	PWM_init();
 	ir_init();
 	encoder_init();
+	pos_calibration();
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 

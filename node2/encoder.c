@@ -3,7 +3,7 @@
 #include "sam.h"
 
 
-
+static int32_t encoder_offset = 0;
 
 void encoder_init(void){
 
@@ -63,7 +63,7 @@ void set_motor_speed(int8_t value){
 
 }
 
-void set_motor_pos_and_dir(CanMsg m){
+void set_motor_speed_and_dir(CanMsg m){
 	if (m.id == 1){
 		int8_t x_val = m.byte[0]; 
 		if (abs(x_val) <= 5) {x_val = 0;}
@@ -77,3 +77,25 @@ void set_motor_pos_and_dir(CanMsg m){
 	return;
 }
 
+void set_motor_pos_and_dir(CanMsg m){
+	if (m.id ==1){
+		int8_t x_pad = m.byte[3]; 
+
+	}
+}
+
+void pos_calibration(void){
+	set_motor_dir(1);
+	set_motor_speed(85);
+	int32_t last = (int32_t)encoder_read();
+	for( int16_t i = 0; i<10000; i++);
+	while(1){
+		int32_t now = (int32_t) encoder_read();
+		//printf("test");
+		if (abs(now-last)<10){break;}
+		last = now;
+	}
+	set_motor_speed(0);
+	encoder_offset = (int32_t) encoder_read();
+
+}
