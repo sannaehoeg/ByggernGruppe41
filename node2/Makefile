@@ -13,7 +13,8 @@ SOURCE_FILES = \
 	time.c \
 	PWM.c \
 	servo.c \
-	IR.c
+	IR.c \
+	encoder.c
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

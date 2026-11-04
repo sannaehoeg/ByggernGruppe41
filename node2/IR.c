@@ -35,7 +35,7 @@ uint8_t ir_beam_blocked(void){
 
 	uint16_t value = adc_read();
 
-	if(value < 250){
+	if(value < 2000){
 		return 1;
 	}
 

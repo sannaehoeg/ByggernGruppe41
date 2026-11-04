@@ -6,6 +6,7 @@
 #include "PWM.h"
 #include "servo.h"
 #include "IR.h"
+#include "encoder.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -61,10 +62,12 @@ int main()
 
 		//uint16_t value = adc_read();
 		//printf("Value: %u\n\r", (unsigned int)value);
-		score_update();
+		/*score_update();
 		uint8_t score = score_get();
-		printf("Score: %u\n\r", score);
+		printf("Score: %u\n\r", score);*/
 
+		uint32_t m_value = encoder_read();
+		printf("Value: %d\n\r", m_value);
     }
     
 }
