@@ -7,6 +7,8 @@
 #include "servo.h"
 #include "IR.h"
 #include "encoder.h"
+#include "time.h"
+#include "solenoid.h"
 
 #define BAUDRATE 9600
 #define F_CPU 84000000
@@ -44,11 +46,13 @@ int main()
 	PWM_init();
 	ir_init();
 	encoder_init();
+	solenoid_init();
 	pos_calibration();
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 
 	CanMsg rx;
+	uint64_t next = time_now();
     while (1)
     {
 		//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
@@ -59,6 +63,7 @@ int main()
 			//can_printmsg(rx);
 			uint16_t ticks = servo_find_ticks(rx);
 			PWM_set_DC(ticks);
+			solenoid_handle_can(rx);
 			//printf("Ticks: %d\n\r", ticks);
 		}
 
@@ -69,9 +74,13 @@ int main()
 		printf("Score: %u\n\r", score);*/
 		
 		//printf("Value: %lu\n\r", encoder_read());
-		set_motor_pos_and_dir(rx);
-		
+		set_motor_speed_and_dir(rx);
+		solenoid_update();
 
+		/*if(time_now()>= next){
+			next += msecs(10);
+			controller();
+		}*/
 		
     }
     

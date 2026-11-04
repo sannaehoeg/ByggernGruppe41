@@ -3,8 +3,8 @@
 #include "sam.h"
 #include "time.h"
 
-#define KI 0.0f
-#define KP 0.05f
+#define KI 0.01f
+#define KP 0.06f
 #define T_S 0.01f
 
 
@@ -88,10 +88,7 @@ void set_motor_pos_and_dir(CanMsg m){
 	if (m.id ==1){
 		int8_t x_pad = m.byte[2]; 
 		set_motor_pos(x_pad);
-
 	}
-
-	controller();
 
 }
 
@@ -102,22 +99,32 @@ int32_t set_motor_pos(int32_t value){
 }
 
 void controller(void){
+	static float integral = 0;
 	float e = (float)(setpoint - get_motor_pos());
 	if(abs(e) < 10){
 		set_motor_speed(0);
+		integral = 0;
 		return;
 	}
-	static float integral = 0;
+	
 	integral += e * T_S;
-
+/*
+	if(KI>0.0f){
+		float lim = 100.0f/KI;
+		if(integral > lim) integral = lim;
+		if(integral < lim) integral = -lim;
+	}
+*/
 	float u = KP * e + KI*integral;
 	if (u < -100.0f){u = -100.0f;}
 	if (u > 100.0f){u = 100.0f;}
-	printf("e =%d, motor pos = %d, setpoint = %d\n\r", e, get_motor_pos(), setpoint);
+	//printf("e =%ld, motor pos = %ld, setpoint = %ld\n\r", e, get_motor_pos(), setpoint);
 
 
 	set_motor_dir((int8_t)u);
 	set_motor_speed((int8_t)u);
+
+
 	
 }
 

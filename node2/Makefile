@@ -14,7 +14,8 @@ SOURCE_FILES = \
 	PWM.c \
 	servo.c \
 	IR.c \
-	encoder.c
+	encoder.c \
+	solenoid.c
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

@@ -72,4 +72,4 @@ build/main.o: main.c sam/sam3x/include/sam.h sam/sam3x/include/sam3x8e.h \
  sam/sam3x/include/instance/instance_rtc.h \
  sam/sam3x/include/instance/instance_gpbr.h \
  sam/sam3x/include/pio/pio_sam3x8e.h uart.h can.h PWM.h servo.h IR.h \
- encoder.h
+ encoder.h time.h solenoid.h
