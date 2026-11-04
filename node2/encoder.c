@@ -1,9 +1,16 @@
 #include "encoder.h"
 #include "can.h"
 #include "sam.h"
+#include "time.h"
+
+#define KI 0.0f
+#define KP 0.05f
+#define T_S 0.01f
+
 
 
 static int32_t encoder_offset = 0;
+static volatile int32_t setpoint = 0;
 
 void encoder_init(void){
 
@@ -79,17 +86,53 @@ void set_motor_speed_and_dir(CanMsg m){
 
 void set_motor_pos_and_dir(CanMsg m){
 	if (m.id ==1){
-		int8_t x_pad = m.byte[3]; 
+		int8_t x_pad = m.byte[2]; 
+		set_motor_pos(x_pad);
 
 	}
+
+	controller();
+
+}
+
+int32_t set_motor_pos(int32_t value){
+	setpoint = 1404 + 1404*value/100;
+
+
+}
+
+void controller(void){
+	float e = (float)(setpoint - get_motor_pos());
+	if(abs(e) < 10){
+		set_motor_speed(0);
+		return;
+	}
+	static float integral = 0;
+	integral += e * T_S;
+
+	float u = KP * e + KI*integral;
+	if (u < -100.0f){u = -100.0f;}
+	if (u > 100.0f){u = 100.0f;}
+	printf("e =%d, motor pos = %d, setpoint = %d\n\r", e, get_motor_pos(), setpoint);
+
+
+	set_motor_dir((int8_t)u);
+	set_motor_speed((int8_t)u);
+	
+}
+
+int32_t get_motor_pos(void){
+	return (int32_t)encoder_read() - encoder_offset;
 }
 
 void pos_calibration(void){
-	set_motor_dir(1);
+
+	set_motor_dir(-1);
 	set_motor_speed(85);
 	int32_t last = (int32_t)encoder_read();
-	for( int16_t i = 0; i<10000; i++);
+	time_spinFor(msecs(500));
 	while(1){
+		time_spinFor(msecs(100));
 		int32_t now = (int32_t) encoder_read();
 		//printf("test");
 		if (abs(now-last)<10){break;}
@@ -97,5 +140,6 @@ void pos_calibration(void){
 	}
 	set_motor_speed(0);
 	encoder_offset = (int32_t) encoder_read();
+	setpoint = 0;
 
 }

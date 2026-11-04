@@ -70,6 +70,9 @@ int main()
 		
 		//printf("Value: %lu\n\r", encoder_read());
 		set_motor_pos_and_dir(rx);
+		
+
+		
     }
     
 }
