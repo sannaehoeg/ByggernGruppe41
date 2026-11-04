@@ -43,6 +43,7 @@ int main()
 	can_init(init, 0);
 	PWM_init();
 	ir_init();
+	encoder_init();
 
 	//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
 
@@ -65,9 +66,9 @@ int main()
 		/*score_update();
 		uint8_t score = score_get();
 		printf("Score: %u\n\r", score);*/
-
-		uint32_t m_value = encoder_read();
-		printf("Value: %d\n\r", m_value);
+		
+		//printf("Value: %lu\n\r", encoder_read());
+		set_motor_pos_and_dir(rx);
     }
     
 }

@@ -6,7 +6,7 @@
 
 uint16_t servo_find_ticks(CanMsg m){
 	if (m.id == 1){
-		int8_t x_val = m.byte[0];
+		int8_t x_val = m.byte[1]; //Not actually x_val but y_val
 		if (abs(x_val) <= 5) {x_val = 0;}
 		if (x_val < -100) {x_val = -100;}
 		if (x_val > 100) {x_val = 100;}
