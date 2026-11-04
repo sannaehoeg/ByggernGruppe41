@@ -3,8 +3,8 @@
 #include "time.h"
 
 static uint8_t sol_active = 0;
-static uint8_t sol_end = 0;
-static uint8_t sol_ready = 0;
+static uint64_t sol_end = 0;
+static uint64_t sol_ready = 0;
 static uint8_t last_pressed = 0;
 
 void solenoid_init(void){

@@ -59,8 +59,6 @@ void adc_read_joystick(IO_board* xy){
 
 void can_send_joystck(IO_board* xy){
 	adc_read_joystick(xy);
-	can_message_t msg = {.id =CAN_ID_JOYSTICK, .length = 2, .data = {xy->x_val, xy->y_val}};
+	can_message_t msg = {.id =CAN_ID_JOYSTICK, .length = 5, .data = {xy->x_val, xy->y_val, xy->x_pad, xy->y_pad, btn_pressed()}};
 	can_transmit(&msg);
-
-
 }

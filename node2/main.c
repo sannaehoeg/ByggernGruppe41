@@ -53,6 +53,8 @@ int main()
 
 	CanMsg rx;
 	uint64_t next = time_now();
+
+	solenoid_fire();
     while (1)
     {
 		//printf("SystemCoreClock = %lu Hz\n\r", (unsigned long)SystemCoreClock);
@@ -66,7 +68,7 @@ int main()
 			solenoid_handle_can(rx);
 			//printf("Ticks: %d\n\r", ticks);
 		}
-
+		printf("pressed: %d\n\r", rx.byte[4]);
 		//uint16_t value = adc_read();
 		//printf("Value: %u\n\r", (unsigned int)value);
 		/*score_update();
@@ -81,6 +83,8 @@ int main()
 			next += msecs(10);
 			controller();
 		}*/
+
+
 		
     }
     
